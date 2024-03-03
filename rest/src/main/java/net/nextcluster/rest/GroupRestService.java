@@ -1,31 +1,32 @@
-package net.nextcluster.manager.rest;
+package net.nextcluster.rest;
 
-import net.nextcluster.driver.NextCluster;
-import net.nextcluster.driver.resource.group.ClusterGroup;
-import net.nextcluster.driver.resource.platform.Platform;
-import net.nextcluster.driver.resource.platform.PlatformService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
-@RestController("/group")
+@RestController
+@RequestMapping("/group")
 public final class GroupRestService {
 
     @GetMapping("/list")
     public List<ClusterGroup> findGroup() {
-        return new ArrayList<>();
+        return List.of(
+                new ClusterGroup("lobby", "lobby", 1,1,
+                        false, false, 512, "PAPER"),
+                new ClusterGroup("proxy", "proxy", 1,1,
+                        false, true, 1024, "VELOCITY"),
+                new ClusterGroup("bw-2x1", "bw-2x1", 1,1,
+                        false, false, 512, "MINESTOM"));
     }
 
     @GetMapping("/group")
     public ClusterGroup findGroup(@RequestParam String id) {
-        return NextCluster.instance().groupProvider().group(id).orElse(null);
+        return new ClusterGroup(id, id, 1,1, false, true, 512, "PAPER");
     }
 
     @DeleteMapping("/delete")
     public void deleteGroup(@RequestParam String id) {
-        NextCluster.instance().groupProvider().delete(id);
+        // test: nothing
     }
 
     @PostMapping("/create")
@@ -35,15 +36,6 @@ public final class GroupRestService {
                                               @RequestParam(defaultValue = "false") boolean fallback,
                                               @RequestParam(defaultValue = "512") int maxMemory,
                                               @RequestParam(defaultValue = "CUSTOM") String platform) {
-
-        NextCluster.instance().groupProvider().create(id)
-                .withMaxOnline(maxOnline)
-                .withMinOnline(minOnline)
-                .withFallback(fallback)
-                .withMaxMemory(maxMemory)
-                .withPlatform(PlatformService.platform(platform))
-                .publish();
-
         return ResponseEntity.ok().build();
     }
 }

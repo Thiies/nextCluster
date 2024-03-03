@@ -1,19 +1,23 @@
 plugins {
-    id("java")
+    id("io.spring.dependency-management") version "1.1.4"
+    id("org.springframework.boot") version "3.3.0-SNAPSHOT"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "net.nextcluster"
-version = "unspecified"
-
 repositories {
-    mavenCentral()
+    maven { url = uri("https://repo.spring.io/milestone") }
+    maven { url = uri("https://repo.spring.io/snapshot") }
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    annotationProcessor(libs.crd)
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
-tasks.test {
-    useJUnitPlatform()
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "net.nextcluster.rest.NextClusterRestStarter"
+    }
+    archiveFileName.set("rest.jar")
 }

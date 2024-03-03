@@ -23,29 +23,14 @@
  */
 
 plugins {
-    id("org.springframework.boot") version "3.3.0-SNAPSHOT"
-    id("io.spring.dependency-management") version "1.1.4"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-}
-
-repositories {
-    maven { url = uri("https://repo.spring.io/milestone") }
-    maven { url = uri("https://repo.spring.io/snapshot") }
 }
 
 dependencies {
     implementation(project(":driver"))
     implementation("io.jsonwebtoken:jjwt:0.12.5")
-
-    implementation("org.springframework.boot:spring-boot-starter-web") {
-        exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
-    }
-    implementation("org.springframework.boot:spring-boot-starter-security")
     annotationProcessor(libs.crd)
-
     testImplementation(project(":driver"))
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
 }
 
 tasks.withType<Jar> {
